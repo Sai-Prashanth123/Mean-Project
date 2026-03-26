@@ -5,7 +5,13 @@ const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
 
-// Load env from backend root (two levels up from api/)
+// Hardcoded production values (fallback if env vars not set in Vercel dashboard)
+process.env.DATABASE = process.env.DATABASE || 'mongodb+srv://Test:Test%40123@cluster0.afty55b.mongodb.net/nexacrm?appName=Cluster0';
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'nexacrm_super_secret_key_2024';
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+process.env.PUBLIC_SERVER_FILE = process.env.PUBLIC_SERVER_FILE || 'https://mean-project-laav.vercel.app/';
+process.env.RESEND_API = process.env.RESEND_API || 're_NMbLtdFe_56Un3PKZ7pQeAAzHwCqe41xd';
+
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
@@ -20,7 +26,6 @@ async function connectDB() {
   await mongoose.connect(process.env.DATABASE);
   isConnected = true;
 
-  // Load all Mongoose models using absolute path
   const modelsPattern = path.join(__dirname, '..', 'src', 'models', '**', '*.js').replace(/\\/g, '/');
   const modelsFiles = globSync(modelsPattern);
   for (const filePath of modelsFiles) {
