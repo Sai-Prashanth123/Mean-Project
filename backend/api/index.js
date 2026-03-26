@@ -5,7 +5,7 @@ const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
 
-// Hardcoded production values (fallback if env vars not set in Vercel dashboard)
+// Hardcoded production values
 process.env.DATABASE = process.env.DATABASE || 'mongodb+srv://Test:Test%40123@cluster0.afty55b.mongodb.net/nexacrm?appName=Cluster0';
 process.env.JWT_SECRET = process.env.JWT_SECRET || 'nexacrm_super_secret_key_2024';
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -36,11 +36,24 @@ async function connectDB() {
 const app = require('../src/app');
 
 module.exports = async (req, res) => {
+  // Always set CORS headers FIRST — before any async work that might fail
+  const origin = req.headers.origin || 'https://mean-project-pi.vercel.app';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token');
+
+  // Answer OPTIONS preflight immediately — no DB needed
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   try {
     await connectDB();
   } catch (err) {
     console.error('DB connection error:', err.message);
     return res.status(500).json({ success: false, message: 'Database connection failed: ' + err.message });
   }
+
   return app(req, res);
 };
