@@ -69,7 +69,7 @@ export default function ErpCrmApp() {
             </Content>
           </Layout>
         ) : (
-          <Layout>
+          <Layout style={{ marginLeft: 256 }}>
             <HeaderContent />
             <Content
               style={{

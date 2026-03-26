@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { Tag, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import useLanguage from '@/locale/useLanguage';
 
 import { useMoney } from '@/settings';
@@ -14,6 +14,10 @@ import RecentTable from './components/RecentTable';
 import SummaryCard from './components/SummaryCard';
 import PreviewCard from './components/PreviewCard';
 import CustomerPreviewCard from './components/CustomerPreviewCard';
+import RevenueChart from './components/RevenueChart';
+import ActivityFeed from './components/ActivityFeed';
+import TopClients from './components/TopClients';
+import OverdueAlert from './components/OverdueAlert';
 
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
@@ -67,19 +71,12 @@ export default function DashboardModule() {
       title: translate('Client'),
       dataIndex: ['client', 'name'],
     },
-
     {
       title: translate('Total'),
       dataIndex: 'total',
-      onCell: () => {
-        return {
-          style: {
-            textAlign: 'right',
-            whiteSpace: 'nowrap',
-            direction: 'ltr',
-          },
-        };
-      },
+      onCell: () => ({
+        style: { textAlign: 'right', whiteSpace: 'nowrap', direction: 'ltr' },
+      }),
       render: (total, record) => moneyFormatter({ amount: total, currency_code: record.currency }),
     },
     {
@@ -89,23 +86,12 @@ export default function DashboardModule() {
   ];
 
   const entityData = [
-    {
-      result: invoiceResult,
-      isLoading: invoiceLoading,
-      entity: 'invoice',
-      title: translate('Invoices'),
-    },
-    {
-      result: quoteResult,
-      isLoading: quoteLoading,
-      entity: 'quote',
-      title: translate('quote'),
-    },
+    { result: invoiceResult, isLoading: invoiceLoading, entity: 'invoice', title: translate('Invoices') },
+    { result: quoteResult, isLoading: quoteLoading, entity: 'quote', title: translate('quote') },
   ];
 
   const statisticCards = entityData.map((data, index) => {
     const { result, entity, isLoading, title } = data;
-
     return (
       <PreviewCard
         key={index}
@@ -127,6 +113,10 @@ export default function DashboardModule() {
   if (money_format_settings) {
     return (
       <>
+        {/* Overdue Alert Banner */}
+        <OverdueAlert />
+
+        {/* ── Summary KPI Cards ── */}
         <Row gutter={[32, 32]}>
           <SummaryCard
             title={translate('Invoices')}
@@ -153,16 +143,31 @@ export default function DashboardModule() {
             data={invoiceResult?.total_undue}
           />
         </Row>
+
         <div className="space30"></div>
+
+        {/* ── Revenue Chart + Status Breakdown ── */}
         <Row gutter={[32, 32]}>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }}>
-            <div className="whiteBox shadow" style={{ height: 458 }}>
+          <Col className="gutter-row w-full" xs={24} lg={14}>
+            <RevenueChart />
+          </Col>
+          <Col className="gutter-row w-full" xs={24} lg={10}>
+            <div className="whiteBox shadow" style={{ height: '100%' }}>
               <Row className="pad20" gutter={[0, 0]}>
                 {statisticCards}
               </Row>
             </div>
           </Col>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }}>
+        </Row>
+
+        <div className="space30"></div>
+
+        {/* ── Top Clients + Customer Stats ── */}
+        <Row gutter={[32, 32]}>
+          <Col className="gutter-row w-full" xs={24} lg={12}>
+            <TopClients />
+          </Col>
+          <Col className="gutter-row w-full" xs={24} lg={12}>
             <CustomerPreviewCard
               isLoading={clientLoading}
               activeCustomer={clientResult?.active}
@@ -170,21 +175,25 @@ export default function DashboardModule() {
             />
           </Col>
         </Row>
+
         <div className="space30"></div>
+
+        {/* ── Recent Tables + Activity Feed ── */}
         <Row gutter={[32, 32]}>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
+          <Col className="gutter-row w-full" xs={24} lg={8}>
+            <ActivityFeed />
+          </Col>
+          <Col className="gutter-row w-full" xs={24} lg={8}>
             <div className="whiteBox shadow pad20" style={{ height: '100%' }}>
-              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 20px 20px' }}>
+              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 0 20px' }}>
                 {translate('Recent Invoices')}
               </h3>
-
               <RecentTable entity={'invoice'} dataTableColumns={dataTableColumns} />
             </div>
           </Col>
-
-          <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
+          <Col className="gutter-row w-full" xs={24} lg={8}>
             <div className="whiteBox shadow pad20" style={{ height: '100%' }}>
-              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 20px 20px' }}>
+              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 0 20px' }}>
                 {translate('Recent Quotes')}
               </h3>
               <RecentTable entity={'quote'} dataTableColumns={dataTableColumns} />

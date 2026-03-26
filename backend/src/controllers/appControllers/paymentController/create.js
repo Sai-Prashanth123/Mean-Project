@@ -5,6 +5,7 @@ const Invoice = mongoose.model('Invoice');
 const custom = require('@/controllers/pdfController');
 
 const { calculate } = require('@/helpers');
+const logActivity = require('@/helpers/activityLogger');
 
 const create = async (req, res) => {
   // Creating a new document in the collection
@@ -75,6 +76,18 @@ const create = async (req, res) => {
       runValidators: true,
     }
   ).exec();
+
+  // Log activity (non-blocking)
+  logActivity({
+    type: 'payment_received',
+    entity: 'payment',
+    entityId: result._id,
+    description: `Payment of ${req.body.amount} ${req.body.currency || 'USD'} received`,
+    amount: req.body.amount,
+    currency: req.body.currency || 'USD',
+    number: result.number,
+    adminId: req.admin._id,
+  });
 
   return res.status(200).json({
     success: true,

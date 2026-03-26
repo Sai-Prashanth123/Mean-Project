@@ -5,10 +5,10 @@ import { Button, Drawer, Layout, Menu } from 'antd';
 import { useAppContext } from '@/context/appContext';
 
 import useLanguage from '@/locale/useLanguage';
-import logoIcon from '@/style/images/logo-icon.svg';
-import logoText from '@/style/images/logo-text.svg';
 
 import useResponsive from '@/hooks/useResponsive';
+import { Typography } from 'antd';
+import logoIcon from '@/style/images/logo-icon.svg';
 
 import {
   SettingOutlined,
@@ -132,15 +132,11 @@ function Sidebar({ collapsible, isMobile = false }) {
       style={{
         overflow: 'auto',
         height: '100vh',
-
-        position: isMobile ? 'absolute' : 'relative',
-        bottom: '20px',
-        ...(!isMobile && {
-          // border: 'none',
-          ['left']: '20px',
-          top: '20px',
-          // borderRadius: '8px',
-        }),
+        position: isMobile ? 'absolute' : 'fixed',
+        left: 0,
+        top: 0,
+        zIndex: 100,
+        boxShadow: '2px 0 8px rgba(0,0,0,0.06)',
       }}
       theme={'light'}
     >
@@ -149,20 +145,24 @@ function Sidebar({ collapsible, isMobile = false }) {
         onClick={() => navigate('/')}
         style={{
           cursor: 'pointer',
+          padding: '16px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
         }}
       >
-        <img src={logoIcon} alt="Logo" style={{ marginLeft: '-5px', height: '40px' }} />
-
+        <img
+          src={logoIcon}
+          alt="NexaCRM"
+          style={{ width: 32, height: 32, flexShrink: 0 }}
+        />
         {!showLogoApp && (
-          <img
-            src={logoText}
-            alt="Logo"
-            style={{
-              marginTop: '3px',
-              marginLeft: '10px',
-              height: '38px',
-            }}
-          />
+          <Typography.Title
+            level={4}
+            style={{ margin: 0, color: '#1890ff', whiteSpace: 'nowrap' }}
+          >
+            NexaCRM
+          </Typography.Title>
         )}
       </div>
       <Menu

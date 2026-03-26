@@ -4,6 +4,7 @@ const router = express.Router();
 
 const appControllers = require('@/controllers/appControllers');
 const { routesList } = require('@/models/utils');
+const { globalSearch } = require('@/controllers/appControllers/searchController');
 
 const routerApp = (entity, controller) => {
   router.route(`/${entity}/create`).post(catchErrors(controller['create']));
@@ -24,6 +25,13 @@ const routerApp = (entity, controller) => {
     router.route(`/${entity}/convert/:id`).get(catchErrors(controller['convert']));
   }
 };
+
+// Custom analytics routes (must be before routesList forEach to take priority)
+router.route('/invoice/revenueChart').get(catchErrors(appControllers['invoiceController']['revenueChart']));
+router.route('/invoice/topClients').get(catchErrors(appControllers['invoiceController']['topClients']));
+
+// Global search
+router.route('/search').get(catchErrors(globalSearch));
 
 routesList.forEach(({ entity, controllerName }) => {
   const controller = appControllers[controllerName];

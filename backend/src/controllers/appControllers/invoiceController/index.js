@@ -8,6 +8,8 @@ const update = require('./update');
 const remove = require('./remove');
 const paginatedList = require('./paginatedList');
 const read = require('./read');
+const revenueChart = require('./revenueChart');
+const topClients = require('./topClients');
 
 methods.mail = sendMail;
 methods.create = create;
@@ -16,5 +18,7 @@ methods.delete = remove;
 methods.summary = summary;
 methods.list = paginatedList;
 methods.read = read;
+methods.revenueChart = revenueChart;
+methods.topClients = topClients;
 
 module.exports = methods;

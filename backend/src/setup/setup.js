@@ -1,5 +1,10 @@
 require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
+
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+
 const { globSync } = require('glob');
 const fs = require('fs');
 const { generate: uniqueId } = require('shortid');

@@ -2,8 +2,6 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown, Layout, Badge, Button } from 'antd';
 
-// import Notifications from '@/components/Notification';
-
 import { LogoutOutlined, ToolOutlined, UserOutlined } from '@ant-design/icons';
 
 import { selectCurrentAdmin } from '@/redux/auth/selectors';
@@ -13,6 +11,7 @@ import { FILE_BASE_URL } from '@/config/serverApiConfig';
 import useLanguage from '@/locale/useLanguage';
 
 import UpgradeButton from './UpgradeButton';
+import GlobalSearch from '@/components/GlobalSearch';
 
 export default function HeaderContent() {
   const currentAdmin = useSelector(selectCurrentAdmin);
@@ -92,7 +91,8 @@ export default function HeaderContent() {
         display: 'flex',
         flexDirection: 'row-reverse',
         justifyContent: 'flex-start',
-        gap: ' 15px',
+        alignItems: 'center',
+        gap: '15px',
       }}
     >
       <Dropdown
@@ -103,7 +103,6 @@ export default function HeaderContent() {
         placement="bottomRight"
         stye={{ width: '280px', float: 'right' }}
       >
-        {/* <Badge dot> */}
         <Avatar
           className="last"
           src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
@@ -118,12 +117,11 @@ export default function HeaderContent() {
         >
           {currentAdmin?.name?.charAt(0)?.toUpperCase()}
         </Avatar>
-        {/* </Badge> */}
       </Dropdown>
 
-      {/* <AppsButton /> */}
-
       <UpgradeButton />
+
+      <GlobalSearch />
     </Header>
   );
 }

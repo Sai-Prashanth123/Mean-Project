@@ -5,6 +5,7 @@ const Model = mongoose.model('Invoice');
 const { calculate } = require('@/helpers');
 const { increaseBySettingKey } = require('@/middlewares/settings');
 const schema = require('./schemaValidate');
+const logActivity = require('@/helpers/activityLogger');
 
 const create = async (req, res) => {
   let body = req.body;
@@ -61,6 +62,18 @@ const create = async (req, res) => {
 
   increaseBySettingKey({
     settingKey: 'last_invoice_number',
+  });
+
+  // Log activity (non-blocking)
+  logActivity({
+    type: 'invoice_created',
+    entity: 'invoice',
+    entityId: result._id,
+    description: `Invoice #${result.number} created for ${result.total} ${result.currency}`,
+    amount: result.total,
+    currency: result.currency,
+    number: result.number,
+    adminId: req.admin._id,
   });
 
   // Returning successfull response

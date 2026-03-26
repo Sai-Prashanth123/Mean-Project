@@ -1,4 +1,10 @@
 require('module-alias/register');
+
+// Force Google DNS + IPv4 first to fix SRV lookup issues on Node.js v22+
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+
 const mongoose = require('mongoose');
 const { globSync } = require('glob');
 const path = require('path');
