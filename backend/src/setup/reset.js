@@ -1,5 +1,4 @@
-require('dotenv').config({ path: '.env' });
-require('dotenv').config({ path: '.env.local' });
+process.env.DATABASE = 'mongodb+srv://Test:Test%40123@cluster0.afty55b.mongodb.net/nexacrm?appName=Cluster0';
 
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DATABASE);

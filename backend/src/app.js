@@ -18,21 +18,9 @@ const fileUpload = require('express-fileupload');
 // create our Express app
 const app = express();
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'https://mean-project-pi.vercel.app',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, curl, Postman)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(null, true); // Allow all in dev; restrict in prod if needed
-    },
+    origin: true,
     credentials: true,
   })
 );

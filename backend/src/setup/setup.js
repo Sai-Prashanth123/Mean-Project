@@ -1,5 +1,8 @@
-require('dotenv').config({ path: '.env' });
-require('dotenv').config({ path: '.env.local' });
+process.env.DATABASE = 'mongodb+srv://Test:Test%40123@cluster0.afty55b.mongodb.net/nexacrm?appName=Cluster0';
+process.env.JWT_SECRET = 'nexacrm_super_secret_key_2024';
+process.env.NODE_ENV = 'development';
+process.env.PUBLIC_SERVER_FILE = 'http://localhost:8888/';
+process.env.RESEND_API = 're_NMbLtdFe_56Un3PKZ7pQeAAzHwCqe41xd';
 
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
