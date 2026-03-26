@@ -18,6 +18,7 @@ import RevenueChart from './components/RevenueChart';
 import ActivityFeed from './components/ActivityFeed';
 import TopClients from './components/TopClients';
 import OverdueAlert from './components/OverdueAlert';
+import OverdueTasksWidget from './components/OverdueTasksWidget';
 
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
@@ -115,6 +116,7 @@ export default function DashboardModule() {
       <>
         {/* Overdue Alert Banner */}
         <OverdueAlert />
+        <OverdueTasksWidget />
 
         {/* ── Summary KPI Cards ── */}
         <Row gutter={[32, 32]}>

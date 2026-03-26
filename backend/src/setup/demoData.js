@@ -15,6 +15,10 @@ const Invoice = require('../models/appModels/Invoice');
 const Payment = require('../models/appModels/Payment');
 const Quote = require('../models/appModels/Quote');
 const ActivityLog = require('../models/appModels/ActivityLog');
+const Deal = require('../models/appModels/Deal');
+const Lead = require('../models/appModels/Lead');
+const Task = require('../models/appModels/Task');
+const Note = require('../models/appModels/Note');
 
 async function seedDemoData() {
   try {
@@ -33,6 +37,10 @@ async function seedDemoData() {
     await Payment.deleteMany({});
     await Quote.deleteMany({});
     await ActivityLog.deleteMany({});
+    await Deal.deleteMany({});
+    await Lead.deleteMany({});
+    await Task.deleteMany({});
+    await Note.deleteMany({});
     console.log('🗑️  Cleared existing data');
 
     // ─── CLIENTS ────────────────────────────────────────────────────
@@ -351,12 +359,66 @@ async function seedDemoData() {
     ]);
     console.log(`✅ 13 Activity logs created`);
 
+    // ─── DEALS ──────────────────────────────────────────────────────
+    const deals = await Deal.insertMany([
+      { title: 'Website Redesign Project', client: arjun._id, value: 250000, stage: 'won', probability: 100, expectedCloseDate: new Date('2026-02-28'), notes: 'Signed contract, project in progress', createdBy: admin._id },
+      { title: 'Mobile App Development', client: priya._id, value: 450000, stage: 'negotiation', probability: 75, expectedCloseDate: new Date('2026-04-30'), notes: 'Finalizing scope and pricing', createdBy: admin._id },
+      { title: 'Cloud Migration Services', client: kiran._id, value: 180000, stage: 'proposal', probability: 50, expectedCloseDate: new Date('2026-05-15'), notes: 'Proposal sent, awaiting feedback', createdBy: admin._id },
+      { title: 'Digital Marketing Retainer', client: rahul._id, value: 96000, stage: 'contacted', probability: 30, expectedCloseDate: new Date('2026-04-01'), notes: 'Had initial call, scheduling demo', createdBy: admin._id },
+      { title: 'CRM Implementation', client: amit._id, value: 320000, stage: 'lead', probability: 10, expectedCloseDate: new Date('2026-06-30'), notes: 'Inbound inquiry from website', createdBy: admin._id },
+      { title: 'E-commerce Platform', client: sneha._id, value: 175000, stage: 'lost', probability: 0, expectedCloseDate: new Date('2026-03-01'), notes: 'Lost to competitor on pricing', createdBy: admin._id },
+      { title: 'SEO & Content Strategy', client: rahul._id, value: 60000, stage: 'proposal', probability: 60, expectedCloseDate: new Date('2026-04-20'), createdBy: admin._id },
+    ]);
+    console.log(`✅ ${deals.length} Deals created`);
+
+    // ─── LEADS ──────────────────────────────────────────────────────
+    const leads = await Lead.insertMany([
+      { name: 'Vikram Nair', email: 'vikram@fintech.io', phone: '+91 99001 23456', company: 'FinTech Solutions', source: 'website', status: 'qualified', score: 82, notes: 'Interested in full-stack development', createdBy: admin._id },
+      { name: 'Deepa Krishnan', email: 'deepa@edutech.in', phone: '+91 88990 12345', company: 'EduTech India', source: 'referral', status: 'contacted', score: 65, notes: 'Referred by Arjun Sharma', createdBy: admin._id },
+      { name: 'Manish Joshi', email: 'manish.joshi@retail.com', phone: '+91 77889 01234', company: 'RetailMax', source: 'cold_call', status: 'new', score: 25, notes: 'Cold outreach - showed mild interest', createdBy: admin._id },
+      { name: 'Ananya Bose', email: 'ananya@healthplus.in', phone: '+91 66778 90123', company: 'HealthPlus', source: 'social', status: 'qualified', score: 78, notes: 'Found us on LinkedIn, very interested', createdBy: admin._id },
+      { name: 'Sanjay Rao', email: 'sanjay@logistics.co', phone: '+91 55667 89012', company: 'Swift Logistics', source: 'email', status: 'converted', score: 91, notes: 'Converted to client - excellent fit', createdBy: admin._id },
+      { name: 'Kavita Gupta', email: 'kavita@fashionhub.com', phone: '+91 44556 78901', company: 'FashionHub', source: 'website', status: 'lost', score: 20, notes: 'Budget constraint - went with competitor', createdBy: admin._id },
+      { name: 'Rohit Malhotra', email: 'rohit@realestate.in', phone: '+91 33445 67890', company: 'PropVista Realty', source: 'referral', status: 'new', score: 45, notes: 'New inquiry, needs follow-up', createdBy: admin._id },
+    ]);
+    console.log(`✅ ${leads.length} Leads created`);
+
+    // ─── TASKS ──────────────────────────────────────────────────────
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    const nextWeek = new Date(); nextWeek.setDate(nextWeek.getDate() + 7);
+
+    await Task.insertMany([
+      { title: 'Follow up with Priya on mobile app proposal', type: 'follow_up', priority: 'high', status: 'overdue', dueDate: twoDaysAgo, description: 'Discuss revised scope and timeline', linkedEntity: 'client', linkedId: priya._id, createdBy: admin._id },
+      { title: 'Send revised quote to Kiran', type: 'email', priority: 'urgent', status: 'overdue', dueDate: yesterday, description: 'Include cloud migration breakdown', linkedEntity: 'client', linkedId: kiran._id, createdBy: admin._id },
+      { title: 'Schedule product demo for Vikram', type: 'meeting', priority: 'high', status: 'pending', dueDate: tomorrow, description: 'Demo of CRM dashboard features', linkedEntity: 'lead', linkedId: leads[0]._id, createdBy: admin._id },
+      { title: 'Call Rahul about digital marketing campaign', type: 'call', priority: 'medium', status: 'pending', dueDate: tomorrow, linkedEntity: 'client', linkedId: rahul._id, createdBy: admin._id },
+      { title: 'Prepare onboarding plan for Arjun', type: 'other', priority: 'low', status: 'pending', dueDate: nextWeek, description: 'Draft 30-60-90 day plan', linkedEntity: 'client', linkedId: arjun._id, createdBy: admin._id },
+      { title: 'Send welcome email to Sanjay Rao (new client)', type: 'email', priority: 'medium', status: 'completed', dueDate: twoDaysAgo, description: 'Onboarding email with portal access', createdBy: admin._id },
+    ]);
+    console.log(`✅ 6 Tasks created`);
+
+    // ─── NOTES ──────────────────────────────────────────────────────
+    await Note.insertMany([
+      { content: 'Arjun prefers communication via WhatsApp. Very responsive during business hours.', linkedEntity: 'client', linkedId: arjun._id, createdBy: admin._id },
+      { content: 'Discussed adding a blog module to the website. Potential upsell of ₹25,000.', linkedEntity: 'client', linkedId: arjun._id, createdBy: admin._id },
+      { content: 'Priya needs the app to support Hindi and Tamil languages. Note for dev team.', linkedEntity: 'client', linkedId: priya._id, createdBy: admin._id },
+      { content: 'Rahul is expanding to 3 new cities. Could be a bigger contract in Q3.', linkedEntity: 'client', linkedId: rahul._id, createdBy: admin._id },
+      { content: 'Sneha introduced us to her CFO. They may need accounting module integration.', linkedEntity: 'client', linkedId: sneha._id, createdBy: admin._id },
+    ]);
+    console.log(`✅ 5 Notes created`);
+
     console.log('\n🎉 Demo data seeded successfully!');
     console.log('📊 Summary:');
     console.log('   - 6 Customers');
     console.log('   - 6 Invoices (2 paid, 1 partial, 3 unpaid)');
     console.log('   - 3 Payments');
     console.log('   - 3 Quotes');
+    console.log('   - 7 Deals across all pipeline stages');
+    console.log('   - 7 Leads with varied sources and scores');
+    console.log('   - 6 Tasks (2 overdue, 3 pending, 1 completed)');
+    console.log('   - 5 Client notes');
     process.exit();
   } catch (e) {
     console.log('\n🚫 Error seeding demo data:');

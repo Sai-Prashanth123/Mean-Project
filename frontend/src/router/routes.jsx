@@ -24,6 +24,11 @@ const PaymentMode = lazy(() => import('@/pages/PaymentMode'));
 
 const Taxes = lazy(() => import('@/pages/Taxes'));
 
+const Pipeline = lazy(() => import('@/pages/Pipeline'));
+const Leads = lazy(() => import('@/pages/Leads'));
+const Tasks = lazy(() => import('@/pages/Tasks'));
+const Reports = lazy(() => import('@/pages/Reports'));
+
 const Settings = lazy(() => import('@/pages/Settings/Settings'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const About = lazy(() => import('@/pages/About'));
@@ -116,6 +121,22 @@ let routes = {
     {
       path: '/taxes',
       element: <Taxes />,
+    },
+    {
+      path: '/pipeline',
+      element: <Pipeline />,
+    },
+    {
+      path: '/leads',
+      element: <Leads />,
+    },
+    {
+      path: '/tasks',
+      element: <Tasks />,
+    },
+    {
+      path: '/reports',
+      element: <Reports />,
     },
 
     {

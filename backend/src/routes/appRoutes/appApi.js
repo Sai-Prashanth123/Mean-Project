@@ -5,6 +5,7 @@ const router = express.Router();
 const appControllers = require('@/controllers/appControllers');
 const { routesList } = require('@/models/utils');
 const { globalSearch } = require('@/controllers/appControllers/searchController');
+const analyticsController = require('@/controllers/appControllers/analyticsController');
 
 const routerApp = (entity, controller) => {
   router.route(`/${entity}/create`).post(catchErrors(controller['create']));
@@ -32,6 +33,24 @@ router.route('/invoice/topClients').get(catchErrors(appControllers['invoiceContr
 
 // Global search
 router.route('/search').get(catchErrors(globalSearch));
+
+// Deal custom routes
+router.route('/deal/moveStage/:id').patch(catchErrors(appControllers['dealController']['moveStage']));
+
+// Lead custom routes
+router.route('/lead/convert/:id').patch(catchErrors(appControllers['leadController']['convert']));
+
+// Task custom routes
+router.route('/task/complete/:id').patch(catchErrors(appControllers['taskController']['complete']));
+router.route('/task/overdueCount').get(catchErrors(appControllers['taskController']['overdueCount']));
+
+// Note custom routes
+router.route('/note/byEntity').get(catchErrors(appControllers['noteController']['byEntity']));
+
+// Analytics routes
+router.route('/analytics/pipeline').get(catchErrors(analyticsController.pipeline));
+router.route('/analytics/leads').get(catchErrors(analyticsController.leads));
+router.route('/analytics/tasks').get(catchErrors(analyticsController.tasks));
 
 routesList.forEach(({ entity, controllerName }) => {
   const controller = appControllers[controllerName];

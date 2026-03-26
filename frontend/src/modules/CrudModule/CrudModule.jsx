@@ -18,7 +18,7 @@ import { useCrudContext } from '@/context/crud';
 
 import { CrudLayout } from '@/layout';
 
-function SidePanelTopContent({ config, formElements, withUpload }) {
+function SidePanelTopContent({ config, formElements, withUpload, extraPanel = null }) {
   const translate = useLanguage();
   const { crudContextAction, state } = useCrudContext();
   const { deleteModalLabels } = config;
@@ -80,6 +80,7 @@ function SidePanelTopContent({ config, formElements, withUpload }) {
         <div className="space10"></div>
       </Row>
       <ReadItem config={config} />
+      {isReadBoxOpen && extraPanel}
       <UpdateForm config={config} formElements={formElements} withUpload={withUpload} />
     </>
   );
@@ -106,7 +107,7 @@ function FixHeaderPanel({ config }) {
   );
 }
 
-function CrudModule({ config, createForm, updateForm, withUpload = false }) {
+function CrudModule({ config, createForm, updateForm, withUpload = false, extraPanel = null }) {
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
@@ -121,7 +122,7 @@ function CrudModule({ config, createForm, updateForm, withUpload = false }) {
         <CreateForm config={config} formElements={createForm} withUpload={withUpload} />
       }
       sidePanelTopContent={
-        <SidePanelTopContent config={config} formElements={updateForm} withUpload={withUpload} />
+        <SidePanelTopContent config={config} formElements={updateForm} withUpload={withUpload} extraPanel={extraPanel} />
       }
     >
       <DataTable config={config} />
